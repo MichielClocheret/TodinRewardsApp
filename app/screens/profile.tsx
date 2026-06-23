@@ -141,9 +141,13 @@ router.replace("/screens/onboard");
                 <ArrowIcon/>
               </View>
             </TouchableOpacity>
-
+              
               <View style={styles.sectionContainerWrapper}>
-                <View style={[styles.sectionContainer, styles.gridCell]}>
+                <TouchableOpacity
+                  style={[styles.sectionContainer, styles.gridCell]}
+                  onPress={() => navigation.navigate("tiers")}
+                  activeOpacity={0.7}
+                >
                   <View style={[styles.section, { flex: 1, display:"flex", gap:15 }]}>
                     <Text style={globalStyles.profileTitle}>Level Up</Text>
                     <View>
@@ -151,9 +155,13 @@ router.replace("/screens/onboard");
                       <Text style={[globalStyles.subTitle, {textAlign:"left"}]}>Your Level</Text>
                     </View>
                   </View>
-                </View>
+                </TouchableOpacity>
 
-                <View style={[styles.sectionContainer, styles.gridCell]}>
+                <TouchableOpacity
+                  style={[styles.sectionContainer, styles.gridCell]}
+                  onPress={() => navigation.navigate("referrals")}
+                  activeOpacity={0.7}
+                >
                   <View style={[styles.section, { overflow: "hidden", flex: 1, display:"flex", justifyContent:"space-between" }]}>
                     <Text style={styles.earningsValue}>
                       {totalEarnedUsd ?? "$0"}
@@ -163,7 +171,7 @@ router.replace("/screens/onboard");
                       <CoinImage width={255.86} height={181.39} />
                     </View>
                   </View>
-                </View>
+                </TouchableOpacity>
               </View>
 
               <View style={styles.sectionContainer}>
@@ -175,11 +183,11 @@ router.replace("/screens/onboard");
                       image={SlotIcon}
                       onPress={() => navigation.navigate("changePassword")}
                     />
-                    <SettingButton
+                    {/* <SettingButton
                       title="Refferals"
                       image={ShopIcon}
                       onPress={() => navigation.navigate("referrals")}
-                    />
+                    /> */}
                     {/* <SettingButton
                       title="Rewards & Perks"
                       image={AccountIcon}

@@ -10,13 +10,6 @@ export type OnboardStackParamsList = {
   loginChangePassword: undefined;
 };
 
-export type AppTabParamsList = {
-  home: undefined;
-  perks: undefined;
-  wallet: undefined;
-  profile: undefined;
-};
-
 export type HomeStackParamsList = {
   homeMain: undefined;
   spinning: undefined;
@@ -25,6 +18,13 @@ export type HomeStackParamsList = {
 export type PerksStackParamsList = {
   perksMain: undefined;
   tiers: undefined;
+};
+
+export type AppTabParamsList = {
+  home: undefined;
+  perks: undefined;
+  wallet: undefined;
+  profile: undefined;
 };
 
 export type WalletStackParamsList = {
@@ -46,6 +46,7 @@ export type ProfileStackParamsList = {
   faq: undefined;
   headquarters: undefined;
   rewardsPerks: undefined;
+  tiers: undefined;
 };
 
 export type AppTabNavProps<T extends keyof AppTabParamsList> =

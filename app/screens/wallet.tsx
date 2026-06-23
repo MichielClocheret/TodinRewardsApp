@@ -1,6 +1,6 @@
 import { Alert, FlatList, Image, Modal, RefreshControl, ScrollView, StyleSheet, Text, TouchableOpacity, Pressable, View} from "react-native";
 import React, { useEffect, useState } from "react";
-import { SafeAreaView } from "react-native-safe-area-context";
+import { SafeAreaView, useSafeAreaInsets } from "react-native-safe-area-context";
 import { CompositeScreenProps } from "@react-navigation/native";
 import { BottomTabScreenProps } from "@react-navigation/bottom-tabs";
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
@@ -16,6 +16,7 @@ import CoinImage from "@/assets/images/FloatingCoins.svg";
 import Search from "@/app/components/Search";
 import Button from "@/app/components/Button";
 import Navigation from "../components/Navigation";
+import ShowMoreList from "../components/ShowMoreList";
 import { getWallet, setPreferredWallet, getTransactions, Wallet, Transaction } from "@/app/API/wallet";
 import { useRefresh } from "@/app/hooks/useRefresh";
 import { formatNumber, parseNumericValue, sortWallets } from "@/app/utils/wallet";
@@ -27,6 +28,7 @@ type WalletScreenProps = CompositeScreenProps<
 >;
 
 const WalletScreen = ({ navigation }: WalletScreenProps) => {
+  const insets = useSafeAreaInsets();
   const [wallets, setWallets] = useState<Wallet[]>([]);
   const [transactions, setTransactions] = useState<Transaction[]>([]);
   const [sortOrder, setSortOrder] = useState<"newest" | "oldest">("newest");
@@ -45,11 +47,11 @@ const WalletScreen = ({ navigation }: WalletScreenProps) => {
     wallets.find((walletItem) => walletItem.asset === selectedWalletAsset) ??
     null;
 
-  const handleLinkWalletPress = () => {
+  const LinkWallet = () => {
     Alert.alert("Coming soon!", "Wallet linking will be available soon.");
   };
 
-  const handleOpenPreferredModal = () => {
+  const OpenPreferredModal = () => {
     if (!wallets.length) {
       Alert.alert(
         "No wallets found",
@@ -67,7 +69,7 @@ const WalletScreen = ({ navigation }: WalletScreenProps) => {
     setShowPreferredModal(true);
   };
 
-  const handleClosePreferredModal = () => {
+  const ClosePreferred = () => {
     setPreferredCoinSearchQuery("");
     setShowPreferredModal(false);
   };
@@ -110,7 +112,7 @@ const WalletScreen = ({ navigation }: WalletScreenProps) => {
     setTransactions(result.data?.data ?? []);
   };
 
-  const handleOpenWithdrawScreen = (wallet: Wallet) => {
+  const OpenWithdraw = (wallet: Wallet) => {
     navigation.navigate("Withdraw", {
       asset: wallet.asset,
       assetName: wallet.asset_name,
@@ -119,7 +121,7 @@ const WalletScreen = ({ navigation }: WalletScreenProps) => {
     });
   };
 
-  const handleSetPreferredWallet = async () => {
+  const SetPreferredWallet = async () => {
     if (!selectedWalletAsset) {
       return;
     }
@@ -146,7 +148,7 @@ const WalletScreen = ({ navigation }: WalletScreenProps) => {
     );
 
     setWallets(updatedWallets);
-    handleClosePreferredModal();
+    ClosePreferred();
   };
 
   const totalBalance = wallets.reduce((total, walletItem) => {
@@ -230,7 +232,7 @@ const WalletScreen = ({ navigation }: WalletScreenProps) => {
 
   const renderWalletItem = ({ item }: { item: Wallet }) => (
     <TouchableOpacity style={styles.walletItemContainer}
-      onPress={() => handleOpenWithdrawScreen(item)}>
+      onPress={() => OpenWithdraw(item)}>
       <View style={styles.walletItem}>
         <View style={styles.BasicInfo}>
           <View>
@@ -266,34 +268,35 @@ const WalletScreen = ({ navigation }: WalletScreenProps) => {
     <GradientView variant="screen" style={globalStyles.gradient}>
       <SafeAreaView style={[globalStyles.safeArea, { backgroundColor: "transparent" }]} edges={["top", "left", "right"]}>
         <View style={[globalStyles.container, styles.screen]}>
+          <LinearGradient
+            style={styles.totalBalanceGradient}
+            colors={[colors.white, colors.todinBlueLight2]}
+            start={{ x: 0, y: 0 }}
+            end={{ x: 1, y: 1 }}
+          >
+            <View>
+              <View>
+                <Text style={[globalStyles.bannerText, styles.totalBalanceTitle]}>
+                  Total Balance
+                </Text>
+                <Text style={[globalStyles.titleLeft, styles.totalBalanceAmount]}>
+                  {formattedTotalBalance}
+                </Text>
+              </View>
+              <View style={styles.coinImage}>
+                <CoinImage width={255.86} height={181.39} />
+              </View>
+            </View>
+          </LinearGradient>
+
           <ScrollView
+            style={styles.scrollView}
             contentContainerStyle={styles.scrollContent}
             showsVerticalScrollIndicator={false}
             refreshControl={
               <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
             }
           >
-            <LinearGradient
-              style={styles.totalBalanceGradient}
-              colors={[colors.white, colors.todinBlueLight2]}
-              start={{ x: 0, y: 0 }}
-              end={{ x: 1, y: 1 }}
-            >
-              <View>
-                <View>
-                  <Text style={[globalStyles.bannerText, styles.totalBalanceTitle]}>
-                    Total Balance
-                  </Text>
-                  <Text style={[globalStyles.titleLeft, styles.totalBalanceAmount]}>
-                    {formattedTotalBalance}
-                  </Text>
-                </View>
-                <View style={styles.coinImage}>
-                  <CoinImage width={255.86} height={181.39} />
-                </View>
-              </View>
-            </LinearGradient>
-
             <View style={styles.walletContainer}>
               <View style={styles.walletButtons}>
                 <Search
@@ -309,17 +312,16 @@ const WalletScreen = ({ navigation }: WalletScreenProps) => {
                   paddingHorizontal={12}
                   paddingVertical={12}
                   fontSize={14}
-                  onPress={handleOpenPreferredModal}
+                  onPress={OpenPreferredModal}
                 />
               </View>
-              <FlatList
+              <ShowMoreList
                 data={filteredWallets}
                 keyExtractor={(item) => item.id.toString()}
-                scrollEnabled={false}
-                style={styles.walletList}
                 renderItem={renderWalletItem}
                 ItemSeparatorComponent={() => <View style={styles.walletItemSeparator} />}
                 ListEmptyComponent={<Text style={styles.emptyStateText}>No coins found.</Text>}
+                style={styles.walletList}
               />
             </View>
 
@@ -410,40 +412,28 @@ const WalletScreen = ({ navigation }: WalletScreenProps) => {
                     </View>
                   </View>
 
-                  <FlatList
+                  <ShowMoreList
                     data={sortedTransactions}
                     keyExtractor={(item) => item.id.toString()}
-                    scrollEnabled={false}
-                    style={styles.historyListContainer}
                     renderItem={renderTransactionItem}
                     ListHeaderComponent={transactionListHeader}
                     ListEmptyComponent={<Text style={styles.emptyStateText}>No transactions yet.</Text>}
+                    style={styles.historyListContainer}
                   />
                 </View>
               </View>
             </View>
           </ScrollView>
 
-          <View style={styles.floatButtonContainer}>
-            <Button
-              title="Link Wallet"
-              variant="blue"
-              paddingVertical={12}
-              paddingHorizontal={12}
-              fontSize={14}
-              fullWidth
-              onPress={handleLinkWalletPress}
-            />
-          </View>
         </View>
 
         <Modal
           visible={showPreferredModal}
           transparent
           animationType="fade"
-          onRequestClose={handleClosePreferredModal}
+          onRequestClose={ClosePreferred}
         >
-          <Pressable style={styles.modalOverlay} onPress={handleClosePreferredModal}>
+          <Pressable style={styles.modalOverlay} onPress={ClosePreferred}>
             <Pressable style={styles.modalCard} onPress={() => {}}>
               <Text style={[globalStyles.titleLeft, styles.modalTitle]}>
                 Select Asset
@@ -499,7 +489,7 @@ const WalletScreen = ({ navigation }: WalletScreenProps) => {
                   <Button
                     title="Cancel"
                     variant="stroke"
-                    onPress={handleClosePreferredModal}
+                    onPress={ClosePreferred}
                     fullWidth
                   />
                 </View>
@@ -507,7 +497,7 @@ const WalletScreen = ({ navigation }: WalletScreenProps) => {
                   <Button
                     title={isSavingPreferred ? "Saving..." : "Select"}
                     variant="blue"
-                    onPress={handleSetPreferredWallet}
+                    onPress={SetPreferredWallet}
                     disabled={!selectedWallet || isSavingPreferred}
                     fullWidth
                   />
@@ -518,6 +508,17 @@ const WalletScreen = ({ navigation }: WalletScreenProps) => {
         </Modal>
 
         <Navigation activeTab="wallet" />
+        <View style={[styles.floatButtonContainer, { bottom: insets.bottom + 75 }]}>
+          <Button
+            title="Link Wallet"
+            variant="blue"
+            paddingVertical={12}
+            paddingHorizontal={12}
+            fontSize={14}
+            fullWidth
+            onPress={LinkWallet}
+          />
+        </View>
       </SafeAreaView>
     </GradientView>
   );
@@ -530,8 +531,11 @@ const styles = StyleSheet.create({
     flex: 1,
     position: "relative",
   },
+  scrollView: {
+    flex: 1,
+  },
   scrollContent: {
-    paddingBottom: 50,
+    paddingBottom: 120,
   },
   totalBalanceGradient: {
     borderWidth: 1,
@@ -692,16 +696,14 @@ const styles = StyleSheet.create({
     position: "absolute",
     left: 0,
     right: 0,
-    bottom: 10,
     paddingHorizontal: 16,
-    zIndex: 10,
   },
 
   transactionContainer: {
     backgroundColor: colors.white,
     padding: 20,
     borderRadius: 20,
-    marginBottom: 16,
+    marginBottom: 45,
   },
   transactionHeaderContainer: {
     display: "flex",

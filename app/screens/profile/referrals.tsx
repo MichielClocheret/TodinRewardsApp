@@ -16,6 +16,7 @@ import User from "@/assets/media/User.svg";
 import Link from "@/assets/media/Link.svg";
 
 import StatsReferral from "@/app/components/StatsReferral";
+import ShowMoreList from "@/app/components/ShowMoreList";
 import { getReferral, Referral, ReferralItem } from "@/app/API/referral";
 
 type ReferralRow = {
@@ -354,20 +355,18 @@ const referrals = () => {
                       <View style={styles.statusColumn} />
                     </View>
 
-                    {referralRows.length === 0 ? (
-                      <View style={styles.emptyState}>
-                        <Text style={[globalStyles.subTitle, { textAlign: "left" }]}>
-                          No referrals yet.
-                        </Text>
-                      </View>
-                    ) : (
-                      <FlatList
-                        data={referralRows}
-                        keyExtractor={(item) => item.key}
-                        renderItem={renderReferralRow}
-                        scrollEnabled={false}
-                      />
-                    )}
+                    <ShowMoreList
+                      data={referralRows}
+                      keyExtractor={(item) => item.key}
+                      renderItem={renderReferralRow}
+                      ListEmptyComponent={
+                        <View style={styles.emptyState}>
+                          <Text style={[globalStyles.subTitle, { textAlign: "left" }]}>
+                            No referrals yet.
+                          </Text>
+                        </View>
+                      }
+                    />
                   </View>
                 </View>
               </View>

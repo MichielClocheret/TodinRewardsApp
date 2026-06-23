@@ -29,7 +29,7 @@ const ConfirmEmail = () => {
   const [isResending, setIsResending] = useState(false);
   const [message, setMessage] = useState<string | null>(null);
 
-  const handleRefreshStatus = async () => {
+  const refreshStatus = async () => {
     setIsRefreshing(true);
     setMessage(null);
 
@@ -50,7 +50,7 @@ const ConfirmEmail = () => {
     setIsRefreshing(false);
   };
 
-  const handleResendVerification = async () => {
+  const resendVerification = async () => {
     setIsResending(true);
     setMessage(null);
 
@@ -81,13 +81,13 @@ const ConfirmEmail = () => {
             <Button
               title={isRefreshing ? "Checking..." : "Continue"}
               variant="fill"
-              onPress={handleRefreshStatus}
+              onPress={refreshStatus}
               disabled={isRefreshing}
             />
             <Button
               title={isResending ? "Sending..." : "Send again"}
               variant="stroke"
-              onPress={handleResendVerification}
+              onPress={resendVerification}
               disabled={isResending}
             />
             <Button

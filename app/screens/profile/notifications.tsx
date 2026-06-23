@@ -46,12 +46,6 @@ const notifications = () => {
             </View>
             
             <View style={styles.notificationsContainer}>
-                <NotificationField
-                    title="News"
-                    subtitle="Stay informed when you added a new favourite shop."
-                    value={newsEnabled}
-                    onValueChange={handleNewsToggle}
-                />
                 {/* <NotificationField 
                     title="Security Alerts" 
                     subtitle="Stay protected with instant security alerts."

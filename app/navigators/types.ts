@@ -46,7 +46,6 @@ export type ProfileStackParamsList = {
   faq: undefined;
   headquarters: undefined;
   rewardsPerks: undefined;
-  favouriteshops: undefined;
 };
 
 export type AppTabNavProps<T extends keyof AppTabParamsList> =

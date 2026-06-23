@@ -1,7 +1,8 @@
 import { combineReducers, configureStore } from "@reduxjs/toolkit";
-import favoritesSlice from "./favorites/slice";
 import settingsSlice from "./settings/slice";
 import authSlice from "./auth/slice";
+import referralSlice from "./referral/slice";
+import walletSlice from "./wallet/slice";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import {
   FLUSH,
@@ -17,9 +18,10 @@ import {
 //in store kan je meerdere slices hebben, 
 // combine reducers voegt ze samen tot 1 root reducer
 const rootReducer = combineReducers({
-  favorites: favoritesSlice,
   settings: settingsSlice,
   auth: authSlice,
+  referral: referralSlice,
+  wallet: walletSlice,
 });
 
 

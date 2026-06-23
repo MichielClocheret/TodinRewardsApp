@@ -53,13 +53,13 @@ export default StyleSheet.create({
     paddingVertical:4,
     color: colors.black,
     fontFamily: "DMSans",
-    fontSize: 24,
+    fontSize: 18,
     fontStyle:"normal",
-    fontWeight: 700,
+    fontWeight: 600,
     lineHeight:24,
     letterSpacing: -0.048,
   },
-
+  
   titleInput:{
     margin:0,
     paddingHorizontal:10,

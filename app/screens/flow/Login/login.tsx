@@ -13,7 +13,6 @@ import BreakLine from "@/app/components/BreakLine";
 import LoginSocials from "@/app/components/LoginSocials";
 import BottomBanner from "@/app/components/BottomBanner";
 import { getAccountInfo, login } from "@/app/API/authentication";
-import { checkInStreak } from "@/app/API/streak";
 import { OnboardStackParamsList } from "@/app/navigators/types";
 
 import { useFormik } from "formik";
@@ -53,7 +52,6 @@ export default function Login() {
       return;
     }
 
-    const checkIn = await checkInStreak();
     const accountInfoResult = await getAccountInfo();
 
     if (!accountInfoResult.success || !accountInfoResult.data) {
@@ -65,12 +63,7 @@ export default function Login() {
     setIsLoading(false);
 
     if (accountInfoResult.data.email_verified_at) {
-      const streak = accountInfoResult.data.login_streak;
-      if (checkIn.isNewCheckIn && typeof streak === "number") {
-        router.replace({ pathname: "/screens/streakCelebration", params: { streak: String(streak) } });
-      } else {
-        router.replace("/screens/app");
-      }
+      router.replace("/screens/app");
       return;
     }
 

@@ -13,7 +13,7 @@ export default function StreakCelebration() {
   const { streak } = useLocalSearchParams<{ streak: string }>();
   const streakCount = parseInt(streak ?? "1", 10);
 
-  const handleContinue = () => {
+  const Continue = () => {
     router.replace("/screens/app");
   };
 
@@ -30,7 +30,7 @@ export default function StreakCelebration() {
             You're on a roll. Keep logging in daily to keep your streak alive and unlock even more rewards.
           </Text>
           <View style={styles.buttonWrapper}>
-            <Button title="Continue" variant="blue" onPress={handleContinue} />
+            <Button title="Continue" variant="blue" onPress={Continue} />
           </View>
         </View>
       </SafeAreaView>

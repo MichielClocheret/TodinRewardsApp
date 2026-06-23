@@ -1,6 +1,7 @@
 import { Alert, RefreshControl, ScrollView, StyleSheet, Text, View } from "react-native";
 import React, { useEffect, useState } from "react";
 import { useNavigation } from "@react-navigation/native";
+import { useRouter } from "expo-router";
 import { SafeAreaView } from "react-native-safe-area-context";
 import globalStyles from "@/app/css/styles";
 import Navigation from "../components/Navigation";
@@ -20,6 +21,7 @@ import Button from "../components/Button";
 import GradientView from "../components/GradientView";
 import ProgressBar from "../components/ProgressBar";
 import { AccountInfo, getAccountInfo } from "../API/authentication";
+import { checkInStreak } from "../API/streak";
 import { useRefresh } from "../hooks/useRefresh";
 import { getWallet } from "../API/wallet";
 import { formatNumber, parseNumericValue } from "../utils/wallet";
@@ -62,6 +64,7 @@ const getActiveDayIndexes = (streakCount: number, currentDayIndex: number) => {
 
 const Perks = () => {
   const navigation = useNavigation();
+  const router = useRouter();
   const maxValue = "1,000 TDN";
   const [account, setAccount] = useState<AccountInfo | null>(null);
   const [tdnBalance, setTdnBalance] = useState<string>("0");
@@ -100,7 +103,23 @@ const Perks = () => {
   const currentDayIndex = (new Date().getDay() + 6) % 7;
   const activeDayIndexes = getActiveDayIndexes(countStreak, currentDayIndex);
 
-  const openVerifyWalletHandler = () => {
+  const CheckIn = async () => {
+    const result = await checkInStreak();
+    if (!result.success) {
+      Alert.alert("Check-in failed", result.message ?? "Something went wrong.");
+      return;
+    }
+    if (result.isNewCheckIn) {
+      const accountResult = await getAccountInfo();
+      const streak = getLoginStreakValue(accountResult.data ?? null);
+      loadAccount();
+      router.push({ pathname: "/screens/streakCelebration", params: { streak: String(streak) } });
+    } else {
+      Alert.alert("Already checked in", "You've already checked in today. Come back tomorrow!");
+    }
+  };
+
+  const openVerifyWallet = () => {
     Alert.alert("Coming soon!");
   };
 
@@ -148,6 +167,10 @@ const Perks = () => {
                     />
                   ))}
                 </View>
+                <View style={styles.buttonContainer}>
+                  <Button title="Check In" variant="blue" onPress={CheckIn}/>
+                  <Button title="View Quest" variant="stroke"/>
+                </View>
               </GradientView>
               
               <GradientView>
@@ -181,7 +204,7 @@ const Perks = () => {
                   <ProgressBar value={tdnBalanceRaw} max={1000} />
                 </View>
                 <View style={styles.buttonContainer}>
-                  <Button title="Verify Wallet" variant="blue" onPress={openVerifyWalletHandler}/>
+                  <Button title="Verify Wallet" variant="blue" onPress={openVerifyWallet}/>
                   <Button title="View Tier" variant="stroke" onPress={() => navigation.navigate("tiers")} />
                 </View>
               </GradientView>
@@ -189,7 +212,7 @@ const Perks = () => {
 
             {/* FUNCTIONALITEIT VOOR LATER, NIET INBEGREPEN IN DEZE OPDRACHT */}
 
-            <View style={styles.upcomingRewardsContainer}>
+            {/*<View style={styles.upcomingRewardsContainer}>
               <View style={styles.headerUpcomingRewards}>
                 <View>
                   <Text style={[globalStyles.titleLeft, {marginBottom:0}]}>Upcoming Rewards</Text>
@@ -262,7 +285,7 @@ const Perks = () => {
                 link="Connect"
                 icon={<NordVpn width={40} height={40} />}            
               />
-            </View>
+            </View>*/}
           </ScrollView>
         </View>
         <Navigation activeTab="perks" />
@@ -280,7 +303,7 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   scrollContent: {
-    paddingBottom: 24,
+    paddingBottom: 120,
   },
   streakTierContainer:{
     display:"flex",

@@ -10,7 +10,6 @@ import Search from '../components/Search';
 import ShopCard from '../components/ShopCard';
 import { getShops, Shop } from '../API/shop';
 import { HomeStackNavProps } from '../navigators/types';
-import { useAppSelector } from '../hooks/reduxHooks';
 import { useRefresh } from '../hooks/useRefresh';
 
 const Home = ({ navigation }: HomeStackNavProps<"homeMain">) => {
@@ -19,16 +18,10 @@ const Home = ({ navigation }: HomeStackNavProps<"homeMain">) => {
   const [shops, setShops] = useState<Shop[]>([]);
   const [searchQuery, setSearchQuery] = useState("");
   const [shopsError, setShopsError] = useState<string | null>(null);
-  const favorites = useAppSelector((state) => state.favorites);
   const headerHeight = Math.max(height * 0.3, 240);
 
   const filteredShops = shops
-    .filter((shop) => shop.name.toLowerCase().includes(searchQuery.trim().toLowerCase()))
-    .sort((a, b) => {
-      const aFav = favorites.some((f) => f.id === a.id) ? 0 : 1;
-      const bFav = favorites.some((f) => f.id === b.id) ? 0 : 1;
-      return aFav - bFav;
-    });
+    .filter((shop) => shop.name.toLowerCase().includes(searchQuery.trim().toLowerCase()));
 
   const loadShops = async () => {
     const result = await getShops();
@@ -181,7 +174,7 @@ const styles = StyleSheet.create({
   },
   
   content: {
-    paddingBottom: 24,
+    paddingBottom: 120,
   },
 
   contentWrapper: {

@@ -9,7 +9,7 @@ type settingButtonProps = {
     title: string;
     image: React.FC<SvgProps>;
     onPress?: (event: GestureResponderEvent) => void;
-    
+
 }
 
 const SettingButton = ({title, image, onPress} : settingButtonProps) => {

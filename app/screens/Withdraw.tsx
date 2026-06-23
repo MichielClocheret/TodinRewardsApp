@@ -68,7 +68,7 @@ const WithdrawScreen = ({
     );
   });
 
-  const handleSelectCoin = (wallet: Wallet) => {
+  const SelectCoin = (wallet: Wallet) => {
     setAsset(wallet.asset);
     setAssetName(wallet.asset_name);
     setBalance(String(wallet.balance));
@@ -79,20 +79,20 @@ const WithdrawScreen = ({
     setShowCoinPicker(false);
   };
 
-  const handleOpenQRScanner = () => {
+  const openQrScanner = () => {
     setShowQRScanner(true);
   };
 
-  const handleCloseQRScanner = () => {
+  const closeQrScanner = () => {
     setShowQRScanner(false);
   };
 
-  const handleScanWalletAddress = (scannedValue: string) => {
+  const scanWalletAddress = (scannedValue: string) => {
     setWalletAddress(scannedValue);
-    handleCloseQRScanner();
+    closeQrScanner();
   };
 
-  const handleSelectWithdrawPercentage = (percentage: number) => {
+  const selectWithdrawPercentage = (percentage: number) => {
     const availableBalance = parseNumericValue(balance);
 
     if (availableBalance === null || availableBalance <= 0) {
@@ -110,12 +110,12 @@ const WithdrawScreen = ({
     );
   };
 
-  const handleWithdrawAmountChange = (value: string) => {
+  const withdrawAmountChange = (value: string) => {
     setWithdrawAmount(value);
     setSelectedWithdrawPercentage(null);
   };
 
-  const handleSubmitWithdraw = async () => {
+  const submitWithdraw = async () => {
     const destinationAddress = walletAddress.trim();
     const amountValue = parseNumericValue(withdrawAmount);
     const availableBalance = parseNumericValue(balance);
@@ -203,7 +203,7 @@ const WithdrawScreen = ({
                 <View style={styles.inlineButtons}>
                   <TouchableOpacity
                     style={styles.pasteButton}
-                    onPress={handleOpenQRScanner}
+                    onPress={openQrScanner}
                   >
                     <CameraIcon width={20} height={20} />
                   </TouchableOpacity>
@@ -229,7 +229,7 @@ const WithdrawScreen = ({
                   placeholderTextColor={colors.black}
                   keyboardType="decimal-pad"
                   value={withdrawAmount}
-                  onChangeText={handleWithdrawAmountChange}
+                  onChangeText={withdrawAmountChange}
                 />
                 <TouchableOpacity
                   style={[styles.inlineButtons, styles.assetBadge]}
@@ -249,7 +249,7 @@ const WithdrawScreen = ({
                     key={percentage}
                     title={percentage}
                     isSelected={selectedWithdrawPercentage === percentage}
-                    onPress={() => handleSelectWithdrawPercentage(percentage)}
+                    onPress={() => selectWithdrawPercentage(percentage)}
                   />
                 ))}
               </View>
@@ -258,7 +258,7 @@ const WithdrawScreen = ({
                 <Button
                   title={isSubmittingWithdraw ? "Submitting..." : "Withdraw"}
                   variant="blue"
-                  onPress={handleSubmitWithdraw}
+                  onPress={submitWithdraw}
                   disabled={isSubmittingWithdraw}
                   fullWidth
                 />
@@ -309,7 +309,7 @@ const WithdrawScreen = ({
                         styles.walletOption,
                         isSelected && styles.walletOptionSelected,
                       ]}
-                      onPress={() => handleSelectCoin(item)}
+                      onPress={() => SelectCoin(item)}
                     >
                       <Image
                         style={styles.walletOptionIcon}
@@ -329,13 +329,13 @@ const WithdrawScreen = ({
         <Modal
           visible={showQRScanner}
           animationType="slide"
-          onRequestClose={handleCloseQRScanner}
+          onRequestClose={closeQrScanner}
         >
           <View style={{ flex: 1 }}>
-            <Camera key={String(showQRScanner)} onScanned={handleScanWalletAddress} />
+            <Camera key={String(showQRScanner)} onScanned={scanWalletAddress} />
             <TouchableOpacity
               style={styles.qrCloseButton}
-              onPress={handleCloseQRScanner}
+              onPress={closeQrScanner}
             >
               <Text style={styles.qrCloseButtonText}>Cancel</Text>
             </TouchableOpacity>

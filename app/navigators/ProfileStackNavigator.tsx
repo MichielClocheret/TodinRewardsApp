@@ -9,7 +9,6 @@ import NotificationsScreen from "../screens/profile/notifications";
 import FaqScreen from "../screens/profile/faq";
 import HeadquartersScreen from "../screens/profile/headquarters";
 import RewardsPerksScreen from "../screens/profile/rewardsPerks";
-import favouriteshops from "../screens/profile/favouriteShops";
 
 const Stack = createNativeStackNavigator<ProfileStackParamsList>();
 
@@ -24,7 +23,6 @@ const ProfileStackNavigator = () => {
       <Stack.Screen name="faq" component={FaqScreen} />
       <Stack.Screen name="headquarters" component={HeadquartersScreen} />
       <Stack.Screen name="rewardsPerks" component={RewardsPerksScreen} />
-      <Stack.Screen name="favouriteshops" component={favouriteshops} />
     </Stack.Navigator>
   );
 };

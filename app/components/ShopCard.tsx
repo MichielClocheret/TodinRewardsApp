@@ -1,12 +1,8 @@
 import { Linking, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
-import * as Notifications from 'expo-notifications'
 import React from 'react'
 import { SvgUri } from 'react-native-svg'
 
 import { Shop } from '@/app/API/shop'
-import { useAppDispatch, useAppSelector } from '@/app/hooks/reduxHooks'
-import { useIsInFavorites } from '@/app/hooks/useIsInFavorites'
-import { toggleFavorite } from '@/app/store/favorites/slice'
 import globalStyles from '@/app/css/styles'
 import colors from '@/app/css/colors'
 import CheckBadge from '@/assets/media/CheckBadge.svg'
@@ -17,12 +13,9 @@ type ShopCardProps = {
 };
 
 const ShopCard = ({ item }: ShopCardProps) => {
-  const dispatch = useAppDispatch();
-  const newsNotificationsEnabled = useAppSelector((state) => state.settings.newsNotificationsEnabled);
-  const isFavorite = useIsInFavorites(item.id);
   const isSvgLogo = item.logo.toLowerCase().includes('.svg');
 
-  const handleOpenShop = async () => {
+  const OpenShop = async () => {
     if (!item.url) return;
     await Linking.openURL(item.url);
   };
@@ -35,22 +28,6 @@ const ShopCard = ({ item }: ShopCardProps) => {
             ? <SvgUri uri={item.logo} width={55} height={55} />
             : <Text>{item.name}</Text>}
         </View>
-        <TouchableOpacity onPress={() => {
-          dispatch(toggleFavorite(item));
-          if (!isFavorite && newsNotificationsEnabled) {
-            Notifications.scheduleNotificationAsync({
-              content: {
-                title: 'New shop added!',
-                body: `${item.name} was added to your favourites.`,
-              },
-              trigger: null,
-            });
-          }
-        }}>
-          <Text style={[styles.heartIcon, isFavorite && styles.heartIconActive]}>
-            {isFavorite ? '♥' : '♡'}
-          </Text>
-        </TouchableOpacity>
       </View>
 
       <View>
@@ -61,7 +38,7 @@ const ShopCard = ({ item }: ShopCardProps) => {
         <Text style={[globalStyles.subTitle, styles.spendingReward]}>
           {item.spending_reward}% Cashback
         </Text>
-        <TouchableOpacity style={styles.badgeAndArrowContainer} onPress={handleOpenShop}>
+        <TouchableOpacity style={styles.badgeAndArrowContainer} onPress={OpenShop}>
           <Text style={[globalStyles.bannerTextBlue, styles.linkShop]}>
             Go to {item.name}
           </Text>
@@ -93,13 +70,6 @@ const styles = StyleSheet.create({
     marginTop: -5,
   },
   shopLogo: {},
-  heartIcon: {
-    fontSize: 22,
-    color: colors.grey,
-  },
-  heartIconActive: {
-    color: colors.todinBlue,
-  },
   badgeAndArrowContainer: {
     flexDirection: 'row',
     alignItems: 'center',
